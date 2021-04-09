@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+  hb-network:
+    driver: bridge
+
+services:
+  mock-service:
+    container_name: mock-service
+    image: rodolpheche/wiremock:latest
+    ports:
+      - 8080:8080
+    networks:
+    - hb-network
+
+  heisenbug-rest-service:
+    container_name: heisenbug-rest-service
+    image: heisenbug-rest-service:latest
+    ports:
+      - 8787:8787
+      - 8081:8081
+    networks:
+      - hb-network
+
+  selenoid-local:
+    container_name: selenoid-local
+    image: aerokube/selenoid:latest-release
+    volumes:
+      - ./selenoid:/etc/selenoid
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "6", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "heisenbug-rest-service_hb-network" ]
+    ports:
+      - 4444:4444
+    networks:
+      - hb-network

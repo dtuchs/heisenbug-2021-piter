@@ -1,0 +1,35 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "io.qameta.allure:allure-gradle:2.8.1"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'io.qameta.allure'
+allure {
+    autoconfigure = true
+    version = '2.13.8'
+}
+
+dependencies {
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.8.0-M1"
+    implementation 'org.junit.jupiter:junit-jupiter:5.8.0-M1'
+    implementation("io.qameta.allure:allure-junit5:2.13.8") {
+        exclude group: "org.junit.platform"
+        exclude group: "org.junit.jupiter"
+    }
+    implementation 'com.codeborne:selenide:5.20.0'
+    implementation 'com.github.tomakehurst:wiremock-jre8:2.27.2'
+    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'io.rest-assured:rest-assured:3.3.0'
+}
+
+test {
+    useJUnitPlatform()
+    maxParallelForks = 1
+}

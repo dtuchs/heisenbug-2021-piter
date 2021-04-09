@@ -1,0 +1,27 @@
+{
+  "chrome": {
+    "default": "89.0",
+    "versions": {
+      "89.0": {
+        "image": "selenoid/vnc:chrome_89.0",
+        "port": "4444",
+        "hosts": [
+          "porno.com:172.20.0.24"
+        ]
+      }
+    }
+  },
+  "firefox": {
+    "default": "86.0",
+    "versions": {
+      "86.0": {
+        "image": "selenoid/vnc:firefox_86.0",
+        "port": "4444",
+        "path": "/wd/hub",
+        "hosts": [
+          "porno.com:172.20.0.24"
+        ]
+      }
+    }
+  }
+}
