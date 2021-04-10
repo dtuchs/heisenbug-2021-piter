@@ -2,8 +2,9 @@ package ru.heisenbug;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -14,7 +15,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.Matchers.equalTo;
 
-@Disabled
 class ApiTest {
 
     private static final WireMock testMock = new WireMock("localhost", 8080);
@@ -27,6 +27,12 @@ class ApiTest {
                 .willReturn(aResponse().withStatus(200)));
     }
 
+    @AfterEach
+    void tearDown() {
+        testMock.resetRequests();
+    }
+
+    @ResourceLock("mock")
     @ValueSource(strings = {"Olga", "Petr", "Anna"})
     @ParameterizedTest
     void sendMessageToThirdPartyService(String name) {
@@ -40,6 +46,7 @@ class ApiTest {
                 .withRequestBody(containing(name)));
     }
 
+    @ResourceLock("mock")
     @ValueSource(strings = {"Dima", "Denis", "Dasha"})
     @ParameterizedTest
     void shouldNotSendMessageToThirdPartyService(String name) {
